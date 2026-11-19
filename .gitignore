@@ -1,0 +1,11 @@
+# Raw and processed data CSVs
+data/raw/*.csv
+data/processed/*.csv
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
