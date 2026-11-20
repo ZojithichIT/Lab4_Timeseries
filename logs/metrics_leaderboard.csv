@@ -1,0 +1,7 @@
+rank,model_name,feature_set,feature_count,train_rmse,train_mae,val_rmse,val_mae,test_rmse,test_mae,test_mape,test_r2,overfit_gap_rmse,residual_mean,ljung_box_pvalue,train_time_s,artifact_path
+1,XGBoost (Load-Only 27f),24 Load Lags + 3 Roll,27,233.2889,165.6011,484.8204,286.287,429.7949,274.1849,0.958,0.991235,196.506,15.6032,1.462978017073104e-36,3.3443,E:\TimeSeries\Lab4_TS\models\xgboost_load_only.joblib
+2,XGBoost (Multivariate 99f),96 Lags + 3 Roll/Trend,99,84.1982,62.5819,503.5632,290.6526,441.4685,279.8821,0.9745,0.990753,357.2703,19.6437,1.0541481821153633e-49,11.3648,E:\TimeSeries\Lab4_TS\models\xgboost_multivariate.joblib
+3,VAR,4 Vars x p=24,96,765.875,507.5369,793.6779,516.9595,686.2723,482.7235,1.7054,0.977654,-79.6027,19.9497,7.949728940040771e-125,9.19,E:\TimeSeries\Lab4_TS\models\var_model.joblib
+4,LSTM (64->32->1),3D Tensor (24x4),96,1257.0394,958.9417,1393.6287,1054.8079,1163.369,882.6697,3.0935,0.935784,-93.6704,-31.9654,0.0,18.8637,E:\TimeSeries\Lab4_TS\models\lstm_multivariate.keras
+5,Persistence Naive (lag_1),1 Lag (load_lag_1),1,1421.5062,1056.2528,1506.822,1115.0979,1383.3733,1045.6605,3.6871,0.9092,-38.1329,-0.2407,0.0,0.0,
+6,Seasonal Naive 24h (lag_24),1 Lag (load_lag_24),1,3513.9596,2445.1513,3506.8726,2428.7546,3623.0374,2533.8329,8.7661,0.377192,109.0778,1.6897,0.0,0.0,

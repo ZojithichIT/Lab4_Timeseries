@@ -1,0 +1,12 @@
+2026-11-19 11:51:54 | INFO    | ==========================================================================================
+2026-11-19 11:51:54 | INFO    | STARTING LAB 4 STANDALONE INFERENCE PIPELINE (eval_hours=168, horizon=24h)
+2026-11-19 11:51:54 | INFO    | ==========================================================================================
+2026-11-19 11:51:55 | INFO    | Loaded Model Registry (4 models, default: XGBoost (Load-Only 27f))
+2026-11-19 11:51:56 | INFO    |   -> VAR                          | Full Test RMSE: 686.27 MW (MAE: 482.72, MAPE:  1.71%) | Last 168h RMSE: 598.76 MW
+2026-11-19 11:51:56 | INFO    |   -> XGBoost (Multivariate 99f)   | Full Test RMSE: 441.47 MW (MAE: 279.88, MAPE:  0.97%) | Last 168h RMSE: 418.38 MW
+2026-11-19 11:51:56 | INFO    |   -> LSTM (64->32->1)             | Full Test RMSE: 1163.37 MW (MAE: 882.67, MAPE:  3.09%) | Last 168h RMSE: 1362.21 MW
+2026-11-19 11:51:58 | INFO    |   -> Future 24h [XGBoost (Multivariate 99f)]: Min=22,194.7 MW | Max=32,528.7 MW | Mean=28,550.8 MW
+2026-11-19 11:51:58 | INFO    |   -> Future 24h [LSTM (64->32->1)          ]: Min=21,502.9 MW | Max=34,678.8 MW | Mean=30,765.9 MW
+2026-11-19 11:51:58 | INFO    |   -> Future 24h [VAR                       ]: Min=18,121.4 MW | Max=30,709.5 MW | Mean=26,237.9 MW
+2026-11-19 11:51:58 | INFO    | Saved 576 prediction rows to: E:\TimeSeries\Lab4_TS\logs\latest_predictions.csv
+2026-11-19 11:51:58 | INFO    | ==========================================================================================

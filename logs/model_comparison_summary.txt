@@ -1,0 +1,81 @@
+========================================================================================================
+LAB 4: MULTIVARIATE TIME SERIES FORECASTING (ELECTRICITY LOAD + WEATHER) - BENCHMARK REPORT
+========================================================================================================
+Generated Timestamp : 2026-11-19 11:47:45
+Environment         : Python 3.12.5 | TF 2.20.0 | XGB 3.4.1 | Statsmodels 0.15.0
+
+========================================================================================================
+1. DATASET AUDIT & PREPROCESSING SUMMARY (SECTIONS 2-4)
+========================================================================================================
+- Merged Dataset    : 35,064 hourly rows (2014-12-31 23:00:00+00:00 -> 2018-12-31 22:00:00+00:00)
+- Cities Aggregated : Barcelona, Bilbao, Madrid, Seville, Valencia
+- Raw Missing Values: load=36 NaNs (0 after time interpolation)
+- Wind Outliers     : 4 raw records > 40 m/s cleaned before interpolation
+- Pearson Corr Load : temperature=+0.2033, humidity=-0.3661, wind_speed=+0.1965
+- Spearman Corr Load: temperature=+0.1814, humidity=-0.3690, wind_speed=+0.2238
+--------------------------------------------------------------------------------------------------------
+Split (70/15/15) | Raw Rows |  Samples | Start UTC                 | End UTC                   |  Mean (MW)
+--------------------------------------------------------------------------------------------------------
+Train          |   24,544 |   24,519 | 2014-12-31 23:00:00+00:00 | 2017-10-19 14:00:00+00:00 |  28,552.69
+Validation     |    5,260 |    5,260 | 2017-10-19 15:00:00+00:00 | 2018-05-26 18:00:00+00:00 |  29,051.26
+Test           |    5,260 |    5,260 | 2018-05-26 19:00:00+00:00 | 2018-12-31 22:00:00+00:00 |  29,024.66
+--------------------------------------------------------------------------------------------------------
+
+========================================================================================================
+2. COMPLETE MODEL PERFORMANCE LEADERBOARD ON TEST SET (RMSE / MAE / MAPE)
+========================================================================================================
+Rank | Model Name                   | Features           | Train RMSE | Val RMSE | Test RMSE | Test MAE |   MAPE |     R2
+--------------------------------------------------------------------------------------------------------
+#1   | XGBoost (Load-Only 27f)      | 24 Load Lags + 3 Roll |     233.29 |   484.82 |    429.79 |   274.18 |  0.96% | 0.9912
+#2   | XGBoost (Multivariate 99f)   | 96 Lags + 3 Roll/Trend |      84.20 |   503.56 |    441.47 |   279.88 |  0.97% | 0.9908
+#3   | VAR                          | 4 Vars x p=24      |     765.88 |   793.68 |    686.27 |   482.72 |  1.71% | 0.9777
+#4   | LSTM (64->32->1)             | 3D Tensor (24x4)   |    1257.04 |  1393.63 |   1163.37 |   882.67 |  3.09% | 0.9358
+#5   | Persistence Naive (lag_1)    | 1 Lag (load_lag_1) |    1421.51 |  1506.82 |   1383.37 |  1045.66 |  3.69% | 0.9092
+#6   | Seasonal Naive 24h (lag_24)  | 1 Lag (load_lag_24) |    3513.96 |  3506.87 |   3623.04 |  2533.83 |  8.77% | 0.3772
+--------------------------------------------------------------------------------------------------------
+
+========================================================================================================
+3. VAR DIAGNOSTICS (ADF STATIONARITY, AIC/BIC LAG ORDER, GRANGER CAUSALITY)
+========================================================================================================
+- Differencing Applied: d = 0 | Selected Lag Order (AIC) = 24 | BIC = 24
+- Parameters per Eq.  : 97 (4 equations x 97 = 388 total parameters)
+  * ADF load        : Level stat= -19.68 (p=0.0000e+00, stationary=True) | Diff1 p=0.0000e+00
+  * ADF temperature : Level stat=  -4.15 (p=8.1490e-04, stationary=True) | Diff1 p=0.0000e+00
+  * ADF humidity    : Level stat=  -8.45 (p=1.6816e-13, stationary=True) | Diff1 p=0.0000e+00
+  * ADF wind_speed  : Level stat= -11.60 (p=2.7200e-21, stationary=True) | Diff1 p=0.0000e+00
+- Granger Causality on Load (p-values): temperature=6.7854e-69, humidity=2.2011e-05, wind_speed=3.3671e-06
+
+========================================================================================================
+4. XGBOOST TUNING & FEATURE GROUP IMPORTANCE
+========================================================================================================
+  * Depth=4, Trees=500   | Best Trees=500 | Val RMSE=547.60 MW | Val MAE=350.36 MW
+  * Depth=4, Trees=800   | Best Trees=800 | Val RMSE=532.12 MW | Val MAE=336.93 MW
+  * Depth=6, Trees=500   | Best Trees=488 | Val RMSE=513.60 MW | Val MAE=309.94 MW
+  * Depth=6, Trees=800   | Best Trees=800 | Val RMSE=507.39 MW | Val MAE=303.82 MW
+  * Depth=8, Trees=500   | Best Trees=491 | Val RMSE=505.14 MW | Val MAE=292.05 MW
+  * Depth=8, Trees=800   | Best Trees=797 | Val RMSE=503.56 MW | Val MAE=290.65 MW
+- Gain Share by Variable Group: load_lags (24)=87.83%, temperature_lags (24)=2.27%, humidity_lags (24)=1.44%, wind_speed_lags (24)=1.07%, rolling_and_trend (3)=7.39%
+- Top 10 Features (Gain): load_lag_1=16.5, load_lag_24=3.4, load_trend_24=2.1, load_lag_21=2.0, load_lag_23=1.2, load_lag_22=1.2, load_lag_4=0.9, load_lag_2=0.8, load_lag_14=0.5, load_lag_11=0.5
+
+========================================================================================================
+5. LSTM ARCHITECTURE & OVERFITTING DIAGNOSIS
+========================================================================================================
+- Architecture : Input(24, 4) -> LSTM(64, return_sequences=True) -> LSTM(32) -> Dense(1)
+- Epochs Run   : 8 | Final Train RMSE=1065.37 MW | Best Val RMSE=1393.63 MW
+
+========================================================================================================
+6. WALK-FORWARD BACKTESTING (168H STATIC VS DAILY REFIT)
+========================================================================================================
+  * VAR                         : Static RMSE=598.76 MW | Daily-Refit RMSE=597.81 MW
+  * XGBoost (Multivariate 99f)  : Static RMSE=418.38 MW | Daily-Refit RMSE=377.98 MW
+  * LSTM (64->32->1)            : Static RMSE=1362.21 MW | Daily-Refit RMSE=1094.81 MW
+
+========================================================================================================
+7. ANALYTICAL QUESTIONS QUANTITATIVE EVIDENCE (Q1-Q6)
+========================================================================================================
+- Q1 Strongest Weather Var : humidity (|r|=0.3661), temperature Granger p=6.79e-69, Gain=2.27% | Weather Ablation Delta RMSE=-11.67 MW
+- Q2 VAR vs Non-Linear ML  : Test RMSE gap VAR-XGB=+244.80 MW | VAR-LSTM=-477.10 MW
+- Q5 LSTM Overfit Gap      : Test RMSE - Train RMSE = -93.67 MW
+========================================================================================================
+END OF LAB 4 BENCHMARK REPORT
+========================================================================================================

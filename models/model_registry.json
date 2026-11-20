@@ -1,0 +1,109 @@
+{
+  "generated_at": "2026-11-19 11:47:45",
+  "scaler_path": "E:\\TimeSeries\\Lab4_TS\\models\\standard_scaler.joblib",
+  "default_model": "XGBoost (Load-Only 27f)",
+  "models_count": 4,
+  "models": [
+    {
+      "model_name": "XGBoost (Load-Only 27f)",
+      "filename": "xgboost_load_only.joblib",
+      "path": "E:\\TimeSeries\\Lab4_TS\\models\\xgboost_load_only.joblib",
+      "feature_set": "24 Load Lags + 3 Roll",
+      "feature_count": 27,
+      "hyperparameters": {
+        "n_estimators": 800,
+        "learning_rate": 0.05,
+        "max_depth": 6,
+        "subsample": 0.85,
+        "colsample_bytree": 0.85,
+        "objective": "reg:squarederror",
+        "eval_metric": "rmse",
+        "early_stopping_rounds": 40,
+        "random_state": 42,
+        "n_jobs": -1
+      },
+      "test_metrics": {
+        "RMSE": 429.7949,
+        "MAE": 274.1849,
+        "MAPE": 0.958,
+        "R2": 0.9912
+      },
+      "train_time_s": 3.3443,
+      "timestamp": "2026-11-19 11:47:45"
+    },
+    {
+      "model_name": "XGBoost (Multivariate 99f)",
+      "filename": "xgboost_multivariate.joblib",
+      "path": "E:\\TimeSeries\\Lab4_TS\\models\\xgboost_multivariate.joblib",
+      "feature_set": "96 Lags + 3 Roll/Trend",
+      "feature_count": 99,
+      "hyperparameters": {
+        "n_estimators": 800,
+        "learning_rate": 0.05,
+        "max_depth": 8,
+        "subsample": 0.85,
+        "colsample_bytree": 0.85,
+        "objective": "reg:squarederror",
+        "eval_metric": "rmse",
+        "early_stopping_rounds": 40,
+        "random_state": 42,
+        "n_jobs": -1
+      },
+      "test_metrics": {
+        "RMSE": 441.4685,
+        "MAE": 279.8821,
+        "MAPE": 0.9745,
+        "R2": 0.9908
+      },
+      "train_time_s": 11.3648,
+      "timestamp": "2026-11-19 11:47:45"
+    },
+    {
+      "model_name": "VAR",
+      "filename": "var_model.joblib",
+      "path": "E:\\TimeSeries\\Lab4_TS\\models\\var_model.joblib",
+      "feature_set": "4 Vars x p=24",
+      "feature_count": 96,
+      "hyperparameters": {
+        "maxlags": 24,
+        "selected_lag": 24,
+        "diff_order": 0
+      },
+      "test_metrics": {
+        "RMSE": 686.2723,
+        "MAE": 482.7235,
+        "MAPE": 1.7054,
+        "R2": 0.9777
+      },
+      "train_time_s": 9.19,
+      "timestamp": "2026-11-19 11:47:45"
+    },
+    {
+      "model_name": "LSTM (64->32->1)",
+      "filename": "lstm_multivariate.keras",
+      "path": "E:\\TimeSeries\\Lab4_TS\\models\\lstm_multivariate.keras",
+      "feature_set": "3D Tensor (24x4)",
+      "feature_count": 96,
+      "hyperparameters": {
+        "units_1": 64,
+        "units_2": 32,
+        "dense_units": 1,
+        "loss": "mse",
+        "optimizer": "adam",
+        "learning_rate": 0.001,
+        "batch_size": 256,
+        "epochs": 20,
+        "patience": 4,
+        "random_state": 42
+      },
+      "test_metrics": {
+        "RMSE": 1163.369,
+        "MAE": 882.6697,
+        "MAPE": 3.0935,
+        "R2": 0.9358
+      },
+      "train_time_s": 18.8637,
+      "timestamp": "2026-11-19 11:47:45"
+    }
+  ]
+}

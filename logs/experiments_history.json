@@ -1,0 +1,193 @@
+[
+  {
+    "run_id": "run_1_20261119_115047",
+    "timestamp": "2026-11-19 11:47:45",
+    "duration_s": 181.75,
+    "environment": {
+      "timestamp": "2026-11-19 11:47:45",
+      "os_platform": "Windows 11",
+      "cpu_count": 12,
+      "python_version": "3.12.5",
+      "numpy_version": "2.5.3",
+      "pandas_version": "3.0.6",
+      "sklearn_version": "1.9.1",
+      "xgboost_version": "3.4.1",
+      "statsmodels_version": "0.15.0",
+      "tf_version": "2.20.0"
+    },
+    "split_summary": {
+      "Train": {
+        "ratio": 0.7,
+        "raw_rows": 24544,
+        "sample_rows": 24519,
+        "start": "2014-12-31 23:00:00+00:00",
+        "end": "2017-10-19 14:00:00+00:00",
+        "load_mean_mw": 28552.689537157756,
+        "load_std_mw": 4536.351184173469
+      },
+      "Validation": {
+        "ratio": 0.15,
+        "raw_rows": 5260,
+        "sample_rows": 5260,
+        "start": "2017-10-19 15:00:00+00:00",
+        "end": "2018-05-26 18:00:00+00:00",
+        "load_mean_mw": 29051.25836501901,
+        "load_std_mw": 4706.688561508765
+      },
+      "Test": {
+        "ratio": 0.15,
+        "raw_rows": 5260,
+        "sample_rows": 5260,
+        "start": "2018-05-26 19:00:00+00:00",
+        "end": "2018-12-31 22:00:00+00:00",
+        "load_mean_mw": 29024.659220532318,
+        "load_std_mw": 4591.315262968038
+      }
+    },
+    "leaderboard": [
+      {
+        "rank": 1,
+        "model_name": "XGBoost (Load-Only 27f)",
+        "feature_set": "24 Load Lags + 3 Roll",
+        "feature_count": 27,
+        "train_rmse": 233.2889,
+        "train_mae": 165.6011,
+        "val_rmse": 484.8204,
+        "val_mae": 286.287,
+        "test_rmse": 429.7949,
+        "test_mae": 274.1849,
+        "test_mape": 0.958,
+        "test_r2": 0.991235,
+        "overfit_gap_rmse": 196.506,
+        "residual_mean": 15.6032,
+        "ljung_box_pvalue": 1.462978017073104e-36,
+        "train_time_s": 3.3443,
+        "artifact_path": "E:\\TimeSeries\\Lab4_TS\\models\\xgboost_load_only.joblib"
+      },
+      {
+        "rank": 2,
+        "model_name": "XGBoost (Multivariate 99f)",
+        "feature_set": "96 Lags + 3 Roll/Trend",
+        "feature_count": 99,
+        "train_rmse": 84.1982,
+        "train_mae": 62.5819,
+        "val_rmse": 503.5632,
+        "val_mae": 290.6526,
+        "test_rmse": 441.4685,
+        "test_mae": 279.8821,
+        "test_mape": 0.9745,
+        "test_r2": 0.990753,
+        "overfit_gap_rmse": 357.2703,
+        "residual_mean": 19.6437,
+        "ljung_box_pvalue": 1.0541481821153633e-49,
+        "train_time_s": 11.3648,
+        "artifact_path": "E:\\TimeSeries\\Lab4_TS\\models\\xgboost_multivariate.joblib"
+      },
+      {
+        "rank": 3,
+        "model_name": "VAR",
+        "feature_set": "4 Vars x p=24",
+        "feature_count": 96,
+        "train_rmse": 765.875,
+        "train_mae": 507.5369,
+        "val_rmse": 793.6779,
+        "val_mae": 516.9595,
+        "test_rmse": 686.2723,
+        "test_mae": 482.7235,
+        "test_mape": 1.7054,
+        "test_r2": 0.977654,
+        "overfit_gap_rmse": -79.6027,
+        "residual_mean": 19.9497,
+        "ljung_box_pvalue": 7.949728940040771e-125,
+        "train_time_s": 9.19,
+        "artifact_path": "E:\\TimeSeries\\Lab4_TS\\models\\var_model.joblib"
+      },
+      {
+        "rank": 4,
+        "model_name": "LSTM (64->32->1)",
+        "feature_set": "3D Tensor (24x4)",
+        "feature_count": 96,
+        "train_rmse": 1257.0394,
+        "train_mae": 958.9417,
+        "val_rmse": 1393.6287,
+        "val_mae": 1054.8079,
+        "test_rmse": 1163.369,
+        "test_mae": 882.6697,
+        "test_mape": 3.0935,
+        "test_r2": 0.935784,
+        "overfit_gap_rmse": -93.6704,
+        "residual_mean": -31.9654,
+        "ljung_box_pvalue": 0.0,
+        "train_time_s": 18.8637,
+        "artifact_path": "E:\\TimeSeries\\Lab4_TS\\models\\lstm_multivariate.keras"
+      },
+      {
+        "rank": 5,
+        "model_name": "Persistence Naive (lag_1)",
+        "feature_set": "1 Lag (load_lag_1)",
+        "feature_count": 1,
+        "train_rmse": 1421.5062,
+        "train_mae": 1056.2528,
+        "val_rmse": 1506.822,
+        "val_mae": 1115.0979,
+        "test_rmse": 1383.3733,
+        "test_mae": 1045.6605,
+        "test_mape": 3.6871,
+        "test_r2": 0.9092,
+        "overfit_gap_rmse": -38.1329,
+        "residual_mean": -0.2407,
+        "ljung_box_pvalue": 0.0,
+        "train_time_s": 0.0,
+        "artifact_path": ""
+      },
+      {
+        "rank": 6,
+        "model_name": "Seasonal Naive 24h (lag_24)",
+        "feature_set": "1 Lag (load_lag_24)",
+        "feature_count": 1,
+        "train_rmse": 3513.9596,
+        "train_mae": 2445.1513,
+        "val_rmse": 3506.8726,
+        "val_mae": 2428.7546,
+        "test_rmse": 3623.0374,
+        "test_mae": 2533.8329,
+        "test_mape": 8.7661,
+        "test_r2": 0.377192,
+        "overfit_gap_rmse": 109.0778,
+        "residual_mean": 1.6897,
+        "ljung_box_pvalue": 0.0,
+        "train_time_s": 0.0,
+        "artifact_path": ""
+      }
+    ],
+    "var_diagnostics": {
+      "diff_order": 0,
+      "selected_lag": 24,
+      "granger_pvals": {
+        "temperature": 6.785410489346476e-69,
+        "humidity": 2.2010843762100415e-05,
+        "wind_speed": 3.367085047308654e-06
+      }
+    },
+    "walk_forward_168h": {
+      "VAR": {
+        "static_rmse": 598.7559416209809,
+        "periodic_refit_rmse": 597.8072198315549
+      },
+      "XGBoost (Multivariate 99f)": {
+        "static_rmse": 418.3802853700368,
+        "periodic_refit_rmse": 377.9849969663778
+      },
+      "LSTM (64->32->1)": {
+        "static_rmse": 1362.2100435233115,
+        "periodic_refit_rmse": 1094.8119604018675
+      }
+    },
+    "analytical_diagnostics": {
+      "weather_ablation_delta_rmse_mw": -11.673586462069807,
+      "var_vs_xgb_rmse_gap_mw": 244.80380045541608,
+      "var_vs_lstm_rmse_gap_mw": -477.09666627173044,
+      "lstm_overfit_gap_rmse": -93.67038862993059
+    }
+  }
+]
