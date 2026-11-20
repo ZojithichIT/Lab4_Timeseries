@@ -1,0 +1,77 @@
+2026-11-19 11:47:45 | INFO    | ============================================================================================
+2026-11-19 11:47:45 | INFO    | STARTING LAB 4 MULTIVARIATE TIME SERIES PIPELINE (VAR vs XGBoost vs LSTM)
+2026-11-19 11:47:45 | INFO    | ============================================================================================
+2026-11-19 11:47:45 | INFO    | [1/8] Loading, merging & cleaning Spain Electricity Load + Weather dataset...
+2026-11-19 11:47:46 | INFO    | -> Merged clean dataset: 35,064 hours (2014-12-31 23:00:00+00:00 -> 2018-12-31 22:00:00+00:00)
+2026-11-19 11:47:46 | INFO    | -> Raw NaNs in load: 36 | Cleaned Wind Outliers (>40 m/s): 4
+2026-11-19 11:47:46 | INFO    | -> Pearson corr with load: temperature=+0.2033, humidity=-0.3661, wind_speed=+0.1965
+2026-11-19 11:47:46 | INFO    | --------------------------------------------------------------------------------------------
+2026-11-19 11:47:46 | INFO    | [2/8] Splitting chronologically (70/15/15), fitting StandardScaler on Train & building 2D/3D windows...
+2026-11-19 11:47:47 | INFO    | -> Train     : 24,544 raw rows | 24,519 window samples | [2014-12-31 23:00:00+00:00 -> 2017-10-19 14:00:00+00:00]
+2026-11-19 11:47:47 | INFO    | -> Validation: 5,260 raw rows | 5,260 window samples | [2017-10-19 15:00:00+00:00 -> 2018-05-26 18:00:00+00:00]
+2026-11-19 11:47:47 | INFO    | -> Test      : 5,260 raw rows | 5,260 window samples | [2018-05-26 19:00:00+00:00 -> 2018-12-31 22:00:00+00:00]
+2026-11-19 11:47:47 | INFO    | -> Shapes: X_xgb_train=(24519, 99), X_lstm_train=(24519, 24, 4), X_lstm_test=(5260, 24, 4)
+2026-11-19 11:47:47 | INFO    | --------------------------------------------------------------------------------------------
+2026-11-19 11:47:47 | INFO    | [3/8] Evaluating Naive Baselines & training Model 1: VAR...
+2026-11-19 11:47:47 | INFO    | --- Evaluation: Persistence Naive (lag_1) (1 Lag (load_lag_1), 0.00s) ---
+2026-11-19 11:47:47 | INFO    |   [Train] RMSE: 1421.51 MW | MAE: 1056.25 MW | MAPE:  3.77% | R2: 0.9018
+2026-11-19 11:47:47 | INFO    |   [Val]   RMSE: 1506.82 MW | MAE: 1115.10 MW | MAPE:  3.91% | R2: 0.8975
+2026-11-19 11:47:47 | INFO    |   [Test]  RMSE: 1383.37 MW | MAE: 1045.66 MW | MAPE:  3.69% | R2: 0.9092
+2026-11-19 11:47:47 | INFO    |   [Gap & Residuals] Overfit Gap: -38.13 MW | Bias: -0.24 MW | LB(24) p=0.00e+00
+2026-11-19 11:47:47 | INFO    | --- Evaluation: Seasonal Naive 24h (lag_24) (1 Lag (load_lag_24), 0.00s) ---
+2026-11-19 11:47:47 | INFO    |   [Train] RMSE: 3513.96 MW | MAE: 2445.15 MW | MAPE:  8.66% | R2: 0.3997
+2026-11-19 11:47:47 | INFO    |   [Val]   RMSE: 3506.87 MW | MAE: 2428.75 MW | MAPE:  8.43% | R2: 0.4447
+2026-11-19 11:47:47 | INFO    |   [Test]  RMSE: 3623.04 MW | MAE: 2533.83 MW | MAPE:  8.77% | R2: 0.3772
+2026-11-19 11:47:47 | INFO    |   [Gap & Residuals] Overfit Gap: +109.08 MW | Bias: +1.69 MW | LB(24) p=0.00e+00
+2026-11-19 11:47:56 | INFO    | -> VAR ADF stationary flags (level): load=True(p=0.000e+00), temperature=True(p=8.149e-04), humidity=True(p=1.682e-13), wind_speed=True(p=2.720e-21)
+2026-11-19 11:47:56 | INFO    | -> VAR diff_order=0 | Selected lag p=24 (AIC=24, BIC=24)
+2026-11-19 11:47:56 | INFO    | -> VAR Granger causality on load p-vals: temperature=6.785e-69, humidity=2.201e-05, wind_speed=3.367e-06
+2026-11-19 11:47:56 | INFO    | --- Evaluation: VAR (4 Vars x p=24, 9.19s) ---
+2026-11-19 11:47:56 | INFO    |   [Train] RMSE:  765.87 MW | MAE: 507.54 MW | MAPE:  1.82% | R2: 0.9715
+2026-11-19 11:47:56 | INFO    |   [Val]   RMSE:  793.68 MW | MAE: 516.96 MW | MAPE:  1.82% | R2: 0.9716
+2026-11-19 11:47:56 | INFO    |   [Test]  RMSE:  686.27 MW | MAE: 482.72 MW | MAPE:  1.71% | R2: 0.9777
+2026-11-19 11:47:56 | INFO    |   [Gap & Residuals] Overfit Gap: -79.60 MW | Bias: +19.95 MW | LB(24) p=7.95e-125
+2026-11-19 11:47:56 | INFO    | --------------------------------------------------------------------------------------------
+2026-11-19 11:47:56 | INFO    | [4/8] Training Model 2: XGBoost (Tuning max_depth & n_estimators + Weather Ablation)...
+2026-11-19 11:47:59 | INFO    | --- Evaluation: XGBoost (Load-Only 27f) (24 Load Lags + 3 Roll, 3.34s) ---
+2026-11-19 11:47:59 | INFO    |   [Train] RMSE:  233.29 MW | MAE: 165.60 MW | MAPE:  0.59% | R2: 0.9974
+2026-11-19 11:47:59 | INFO    |   [Val]   RMSE:  484.82 MW | MAE: 286.29 MW | MAPE:  1.01% | R2: 0.9894
+2026-11-19 11:47:59 | INFO    |   [Test]  RMSE:  429.79 MW | MAE: 274.18 MW | MAPE:  0.96% | R2: 0.9912
+2026-11-19 11:47:59 | INFO    |   [Gap & Residuals] Overfit Gap: +196.51 MW | Bias: +15.60 MW | LB(24) p=1.46e-36
+2026-11-19 11:48:33 | INFO    |   -> Tuning Depth=4, Trees=500 | Best Iter=500 | Val RMSE=547.60 MW
+2026-11-19 11:48:33 | INFO    |   -> Tuning Depth=4, Trees=800 | Best Iter=800 | Val RMSE=532.12 MW
+2026-11-19 11:48:33 | INFO    |   -> Tuning Depth=6, Trees=500 | Best Iter=488 | Val RMSE=513.60 MW
+2026-11-19 11:48:33 | INFO    |   -> Tuning Depth=6, Trees=800 | Best Iter=800 | Val RMSE=507.39 MW
+2026-11-19 11:48:33 | INFO    |   -> Tuning Depth=8, Trees=500 | Best Iter=491 | Val RMSE=505.14 MW
+2026-11-19 11:48:33 | INFO    |   -> Tuning Depth=8, Trees=800 | Best Iter=797 | Val RMSE=503.56 MW
+2026-11-19 11:48:33 | INFO    | --- Evaluation: XGBoost (Multivariate 99f) (96 Lags + 3 Roll/Trend, 11.36s) ---
+2026-11-19 11:48:33 | INFO    |   [Train] RMSE:   84.20 MW | MAE:  62.58 MW | MAPE:  0.22% | R2: 0.9997
+2026-11-19 11:48:33 | INFO    |   [Val]   RMSE:  503.56 MW | MAE: 290.65 MW | MAPE:  1.02% | R2: 0.9886
+2026-11-19 11:48:33 | INFO    |   [Test]  RMSE:  441.47 MW | MAE: 279.88 MW | MAPE:  0.97% | R2: 0.9908
+2026-11-19 11:48:33 | INFO    |   [Gap & Residuals] Overfit Gap: +357.27 MW | Bias: +19.64 MW | LB(24) p=1.05e-49
+2026-11-19 11:48:33 | INFO    | -> XGBoost Gain Share by Group: load_lags (24)=87.83%, temperature_lags (24)=2.27%, humidity_lags (24)=1.44%, wind_speed_lags (24)=1.07%, rolling_and_trend (3)=7.39%
+2026-11-19 11:48:33 | INFO    | --------------------------------------------------------------------------------------------
+2026-11-19 11:48:33 | INFO    | [5/8] Training Model 3: Stacked LSTM(64) -> LSTM(32) -> Dense(1)...
+2026-11-19 11:48:53 | INFO    | --- Evaluation: LSTM (64->32->1) (3D Tensor (24x4), 18.86s) ---
+2026-11-19 11:48:53 | INFO    |   [Train] RMSE: 1257.04 MW | MAE: 958.94 MW | MAPE:  3.44% | R2: 0.9232
+2026-11-19 11:48:53 | INFO    |   [Val]   RMSE: 1393.63 MW | MAE: 1054.81 MW | MAPE:  3.75% | R2: 0.9123
+2026-11-19 11:48:53 | INFO    |   [Test]  RMSE: 1163.37 MW | MAE: 882.67 MW | MAPE:  3.09% | R2: 0.9358
+2026-11-19 11:48:53 | INFO    |   [Gap & Residuals] Overfit Gap: -93.67 MW | Bias: -31.97 MW | LB(24) p=0.00e+00
+2026-11-19 11:48:53 | INFO    | -> LSTM Epochs Completed: 8
+2026-11-19 11:48:53 | INFO    | --------------------------------------------------------------------------------------------
+2026-11-19 11:48:53 | INFO    | [6/8] Running Walk-Forward Validation (Full Test Rolling RMSE + 168h Adaptive Refit Simulation)...
+2026-11-19 11:50:47 | INFO    |   -> 168h Walk-Forward VAR                         : Static RMSE=598.76 MW | Daily-Refit RMSE=597.81 MW
+2026-11-19 11:50:47 | INFO    |   -> 168h Walk-Forward XGBoost (Multivariate 99f)  : Static RMSE=418.38 MW | Daily-Refit RMSE=377.98 MW
+2026-11-19 11:50:47 | INFO    |   -> 168h Walk-Forward LSTM (64->32->1)            : Static RMSE=1362.21 MW | Daily-Refit RMSE=1094.81 MW
+2026-11-19 11:50:47 | INFO    | --------------------------------------------------------------------------------------------
+2026-11-19 11:50:47 | INFO    | [8/8] Exporting structured leaderboard CSV, model registry JSON, summary report & 10 plots...
+2026-11-19 11:50:50 | INFO    | FINAL TEST LEADERBOARD (VAR vs XGBoost vs LSTM):
+2026-11-19 11:50:50 | INFO    |   #1 XGBoost (Load-Only 27f)      | RMSE=429.79 MW | MAE=274.18 MW | MAPE= 0.96%
+2026-11-19 11:50:50 | INFO    |   #2 XGBoost (Multivariate 99f)   | RMSE=441.47 MW | MAE=279.88 MW | MAPE= 0.97%
+2026-11-19 11:50:50 | INFO    |   #3 VAR                          | RMSE=686.27 MW | MAE=482.72 MW | MAPE= 1.71%
+2026-11-19 11:50:50 | INFO    |   #4 LSTM (64->32->1)             | RMSE=1163.37 MW | MAE=882.67 MW | MAPE= 3.09%
+2026-11-19 11:50:50 | INFO    |   #5 Persistence Naive (lag_1)    | RMSE=1383.37 MW | MAE=1045.66 MW | MAPE= 3.69%
+2026-11-19 11:50:50 | INFO    |   #6 Seasonal Naive 24h (lag_24)  | RMSE=3623.04 MW | MAE=2533.83 MW | MAPE= 8.77%
+2026-11-19 11:50:50 | INFO    | ============================================================================================
+2026-11-19 11:50:50 | INFO    | LAB 4 PIPELINE COMPLETED IN 185.47 SECONDS!
+2026-11-19 11:50:50 | INFO    | ============================================================================================
